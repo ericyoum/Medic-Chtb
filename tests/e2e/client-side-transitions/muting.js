@@ -287,7 +287,7 @@ describe('Muting', () => {
       }, ids);
     };
 
-    it('should not process muting client-side if not enabled', async () => {
+    it('should not process muting1 client-side if not enabled', async () => {
       const settingsWithDisabled = _.cloneDeep(settings);
       settingsWithDisabled.transitions.muting = { client_side: false };
 

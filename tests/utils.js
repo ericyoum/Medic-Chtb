@@ -348,12 +348,14 @@ const createUsers = async (users, meta = false) => {
   }
 
   if (!meta) {
-    return;
+    return module.exports.delayPromise(() => Promise.resolve(), 500);
   }
 
   for (const user of users) {
     await request({ path: `/${constants.DB_NAME}-user-${user.username}-meta`, method: 'PUT' });
   }
+
+  return module.exports.delayPromise(() => Promise.resolve(), 500);
 };
 
 const waitForDocRev = (ids) => {
