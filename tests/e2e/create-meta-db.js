@@ -27,9 +27,6 @@ describe('Create user meta db : ', () => {
     await commonElements.calmNative();
   });
 
-  beforeEach(() => utils.beforeEach());
-  afterEach(() => utils.afterEach());
-
   it('should allow a new user to read/write from meta db', async () => {
     await usersPage.openAddUserModal();
     await addUserModal.fillForm(userName, fullName, password);

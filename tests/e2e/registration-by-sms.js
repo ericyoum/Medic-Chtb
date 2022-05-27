@@ -228,6 +228,7 @@ describe('registration transition', () => {
     let originalTimeout;
 
     beforeEach(async () => {
+      await sUtils.waitForSentinel();
       const body = {
         messages: [{
           from: PHONE,
@@ -235,7 +236,7 @@ describe('registration transition', () => {
           id: 'a'
         }]
       };
-      await utils.updateSettings(CONFIG);
+      await utils.updateSettings(CONFIG, 'sentinel');
       await utils.saveDocs(DOCS);
       await submit(body);
       await sUtils.waitForSentinel();
