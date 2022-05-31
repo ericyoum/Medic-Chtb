@@ -21,6 +21,7 @@ describe('Purging on login', () => {
   const badFormId2 = 'bad-form2';
   const goodFormId2 = 'good-form2';
 
+
   // TODO: at some point if we're feeling masochistic we can re-do this as
   // actual admin app interactions + restricted user interactions (to create reports)
   const restrictedUser = {
