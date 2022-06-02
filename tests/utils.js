@@ -296,7 +296,6 @@ const revertDb = async (except, ignoreRefresh) => {
   } else {
     watcher && watcher.cancel();
   }
-
   await setUserContactDoc();
 };
 
