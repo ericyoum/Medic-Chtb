@@ -124,12 +124,14 @@ describe('Service worker cache', () => {
   });
 
   it('branding updates trigger login page refresh', async () => {
+    await browser.throttle('offline'); // make sure we don't sync before we expect to
     const waitForLogs = utils.waitForApiLogs(SW_SUCCESSFULL_REGEX);
     const branding = await utils.getDoc('branding');
     branding.title = 'Not Medic';
     await utils.saveDoc(branding);
     await waitForLogs.promise;
 
+    await browser.throttle('online');
     await commonPage.sync(true);
     await browser.throttle('offline'); // make sure we load the login page from cache
     await commonPage.logout();
@@ -139,6 +141,7 @@ describe('Service worker cache', () => {
   });
 
   it('login page translation updates trigger login page refresh', async () => {
+    await browser.throttle('offline'); // make sure we don't sync before we expect to
     const waitForLogs = utils.waitForApiLogs(SW_SUCCESSFULL_REGEX);
     await utils.addTranslations('en', {
       'User Name': 'NotUsername',
@@ -146,6 +149,7 @@ describe('Service worker cache', () => {
     });
     await waitForLogs.promise;
 
+    await browser.throttle('online');
     await commonPage.sync(true);
     await browser.throttle('offline'); // make sure we load the login page from cache
     await commonPage.logout();
@@ -157,6 +161,7 @@ describe('Service worker cache', () => {
   });
 
   it('adding new languages triggers login page refresh', async () => {
+    await browser.throttle('offline'); // make sure we don't sync before we expect to
     const waitForLogs = utils.waitForApiLogs(SW_SUCCESSFULL_REGEX);
     await utils.addTranslations('ro', {
       'User Name': 'Utilizator',
@@ -165,6 +170,7 @@ describe('Service worker cache', () => {
     });
     await waitForLogs.promise;
 
+    await browser.throttle('online');
     await commonPage.sync(true);
     await commonPage.logout();
 
