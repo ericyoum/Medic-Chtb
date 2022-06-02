@@ -289,7 +289,7 @@ const revertDb = async (except, ignoreRefresh) => {
 
   // only refresh if the settings were changed or modal was already present and we're not explicitly ignoring
   if (!ignoreRefresh && (needsRefresh || await hasModal())) {
-    watcher && watcher.cancel();
+    await watcher && watcher.promise;
     await refreshToGetNewSettings();
   } else if (needsRefresh) {
     await watcher && watcher.promise;
