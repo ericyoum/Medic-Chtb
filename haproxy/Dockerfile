@@ -1,4 +1,4 @@
-FROM haproxy:2.3.19
+FROM haproxy:2.3.20
 
 RUN apt-get update && apt-get install rsyslog luarocks gettext jq curl -y
 COPY entrypoint.sh /
