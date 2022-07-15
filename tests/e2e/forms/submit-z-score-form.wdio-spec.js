@@ -1,5 +1,6 @@
 const ZScoreForm = require('../../page-objects/forms/z-score.wdio.page');
-const reportsPage= require('../../page-objects/reports/reports.wdio.page');
+const reportsPage = require('../../page-objects/reports/reports.wdio.page');
+const loginPage = require('../../page-objects/login/login.wdio.page')
 const constants = require('../../constants');
 
 const userContactDoc = {
@@ -21,6 +22,7 @@ const userContactDoc = {
 describe('Submit Z-Score form', () => {
   before(async () => {
     await ZScoreForm.configureForm(userContactDoc);
+    await loginPage.cookieLogin();
   });
 
   //beforeEach(utils.resetBrowser);
