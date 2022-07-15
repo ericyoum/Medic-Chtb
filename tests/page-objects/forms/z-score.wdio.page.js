@@ -136,7 +136,7 @@ const docs = [
 
 const clearAndFill = async (selector, value) => {
   const element = await $(selector);
-  await element.setvalue(value);
+  await element.setValue(value);
 };
 
 const clickAndGetValue = async selector => {
