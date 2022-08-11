@@ -78,7 +78,7 @@ const selectLHSRowByText = async (text, executeSearch = true) => {
   if (executeSearch) {
     await search(text);
   }
-  await browser.waitUntil(async () => await findRowByText(text));
+  //await browser.waitUntil(async () => await findRowByText(text));
   const row = await findRowByText(text);
   if (!row) {
     throw new Error(`Contact "${text}" was not found`);
@@ -294,7 +294,7 @@ module.exports = {
   openReport,
   getContactCardTitle,
   getContactInfoName,
-  getContactMedicID,  
+  getContactMedicID,
   actionResourceIcon,
   newPrimaryContactButton,
   newPrimaryContactName,
@@ -303,5 +303,5 @@ module.exports = {
   externalIdField,
   notes,
   contactCardIcon,
-  editContactButton,  
+  editContactButton,
 };
