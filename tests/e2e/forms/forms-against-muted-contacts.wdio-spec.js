@@ -4,6 +4,8 @@ const unmutePerson = require('../../page-objects/forms/unmute-person.wdio.page')
 const contactsObjects = require('../../page-objects/contacts/contacts.wdio.page');
 const genericContactForm = require('../../page-objects/forms/generic-contact-form.wdio.page');
 const commonElements = require('../../page-objects/common/common.wdio.page');
+const loginPage = require('../../page-objects/login/login.wdio.page');
+
 
 const clinic = {
   _id: 'clinic',
@@ -59,7 +61,7 @@ describe('Submitting forms for muted contacts', () => {
     await utils.saveDocs(contacts);
     await homeVisit.configureForm();
     await unmutePerson.configureForm();
-
+    await loginPage.cookieLogin();
     await commonElements.goToPeople();
     await utils.updateSettings(settings);
   });
