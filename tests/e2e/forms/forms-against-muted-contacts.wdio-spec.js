@@ -1,9 +1,9 @@
 const { expect } = require('chai');
 
 const utils = require('../../utils');
-const homeVisit = require('../../page-objects/forms/home-visit.po');
-const unmutePerson = require('../../page-objects/forms/unmute-person.po');
-const contactsObjects = require('../../page-objects/contacts/contacts.po');
+const homeVisit = require('../../page-objects/forms/home-visit.wdio.page');
+const unmutePerson = require('../../page-objects/forms/unmute-person.wdio.page');
+const contactsObjects = require('../../page-objects/contacts/contacts.wdio.page');
 const genericContactForm = require('../../page-objects/forms/generic-contact-form.po');
 const commonElements = require('../../page-objects/common/common.po');
 
