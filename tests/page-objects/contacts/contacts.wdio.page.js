@@ -242,5 +242,6 @@ module.exports = {
   rightAddPerson,
   allContactsList,
   editDistrict,
-  childrenCards
+  childrenCards,
+  dateOfBirthField,
 };
