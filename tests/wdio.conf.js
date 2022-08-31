@@ -40,7 +40,7 @@ const baseConfig = {
   // will be called from there.
   //
   specs: [
-    './tests/e2e/**/*.wdio-spec.js',
+    './tests/e2e/**/refactor-submit-z-score-form.wdio-spec.js',
   ],
   // Patterns to exclude.
   exclude: [
