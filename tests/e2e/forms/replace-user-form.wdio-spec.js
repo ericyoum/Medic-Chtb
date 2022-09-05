@@ -1,10 +1,11 @@
 const utils = require('../../utils');
-const userData = require('../../page-objects/forms/data/user.po.data');
 const loginPage = require('../../page-objects/login/login.wdio.page');
 const commonPage = require('../../page-objects/common/common.wdio.page');
 const genericForm = require('../../page-objects/forms/generic-form.wdio.page');
 const sentinelUtils = require('../sentinel/utils');
 const contactsPage = require('../../page-objects/contacts/contacts.wdio.page');
+const userFactory = require('../../factories/cht/users/users');
+const placeFactory = require('../../factories/cht/contacts/place');
 
 describe('Offline user replace form', () => {
   const sync = async () => {
@@ -15,9 +16,14 @@ describe('Offline user replace form', () => {
 
   before(async () => {
     // TODO: use CHW user account, not admin
-    await utils.seedTestData(userData.userContactDoc, userData.docs);
-    await loginPage.cookieLogin();
-    await commonPage.goToPeople(userData.userContactDoc._id);
+    const places = placeFactory.generateHierarchy();
+    const hcId = places.find(p => p.type === 'health_center')._id;
+    await utils.saveDocs(places);
+    const user = userFactory.build({ username: 'offlineuser', isOffline: true, place: hcId });
+    await utils.createUsers([user]);
+
+    await loginPage.cookieLogin({ username: user.username, password: user.password });
+    await commonPage.goToPeople(user.contact._id);
   });
 
   it('Replace the current CHW with another one, offline', async () => {
