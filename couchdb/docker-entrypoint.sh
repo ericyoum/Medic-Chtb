@@ -60,22 +60,19 @@ if [ "$1" = '/opt/couchdb/bin/couchdb' ]; then
 
     fi
 
-    if [ "$COUCHDB_SECRET" ]; then
+    if [ "$COUCHDB_SECRET" ] && [ -z "$COUCHDB_SYNC_ADMINS_NODE" ]; then
         # Set secret only if not already present
         if ! grep -Pzoqr "\[couch_httpd_auth\]\nsecret =" /opt/couchdb/etc/local.d/*.ini; then
             printf "\n[couch_httpd_auth]\nsecret = %s\n" "$COUCHDB_SECRET" >> $CLUSTER_CREDENTIALS
         fi
     fi
 
-
-
-    if [ "$COUCHDB_UUID" ]; then
+    if [ "$COUCHDB_UUID" ] && [ -z "$COUCHDB_SYNC_ADMINS_NODE" ]; then
         # Set uuid only if not already present
         if ! grep -Pzoqr "\[couchdb\]\nuuid =" /opt/couchdb/etc/local.d/*.ini; then
             printf "\n[couchdb]\nuuid = %s\n" "$COUCHDB_UUID" >> $CLUSTER_CREDENTIALS
         fi
     fi
-
 
     if [ "$SVC_NAME" ] && [[ "$COUCHDB_SYNC_ADMINS_NODE" || "$CLUSTER_PEER_IPS" ]]; then
         # Since changing this name after it has been set can mess up clustering, this can only run once  so a new service name can not be set on subsequent runs
@@ -95,10 +92,20 @@ if [ "$1" = '/opt/couchdb/bin/couchdb' ]; then
         # Wait until couchdb1 node is ready and then retrieve salted password. We need to use same
         # hashed password across all nodes so that session cookies can be reused.
         /bin/bash /opt/couchdb/etc/set-up-cluster.sh check_if_couchdb_is_ready http://$COUCHDB_USER:$COUCHDB_PASSWORD@$COUCHDB_SYNC_ADMINS_NODE:5984
-        COUCHDB_HASHED_PASSWORD=`curl http://$COUCHDB_USER:$COUCHDB_PASSWORD@$COUCHDB_SYNC_ADMINS_NODE:5984/_node/couchdb@$COUCHDB_SYNC_ADMINS_NODE/_config/admins/$COUCHDB_USER | sed "s/^\([\"]\)\(.*\)\1\$/\2/g"`
 
+        COUCHDB_HASHED_PASSWORD=`curl http://$COUCHDB_USER:$COUCHDB_PASSWORD@$COUCHDB_SYNC_ADMINS_NODE:5984/_node/couchdb@$COUCHDB_SYNC_ADMINS_NODE/_config/admins/$COUCHDB_USER | sed "s/^\([\"]\)\(.*\)\1\$/\2/g"`
         if ! grep -Pzoqr "$COUCHDB_USER = $COUCHDB_HASHED_PASSWORD" /opt/couchdb/etc/local.d/*.ini; then
-            printf "[admins]\n%s = %s\n" "$COUCHDB_USER" "$COUCHDB_HASHED_PASSWORD" >> $CLUSTER_CREDENTIALS
+            printf "\n[admins]\n%s = %s\n" "$COUCHDB_USER" "$COUCHDB_HASHED_PASSWORD" >> $CLUSTER_CREDENTIALS
+        fi
+
+        SYNC_NODE_COUCHDB_SECRET=`curl http://$COUCHDB_USER:$COUCHDB_PASSWORD@$COUCHDB_SYNC_ADMINS_NODE:5984/_node/couchdb@$COUCHDB_SYNC_ADMINS_NODE/_config/couch_httpd_auth/secret | sed "s/^\([\"]\)\(.*\)\1\$/\2/g"`
+        if ! grep -Pzoqr "secret = $SYNC_NODE_COUCHDB_SECRET" /opt/couchdb/etc/local.d/*.ini; then
+            printf "\n[couch_httpd_auth]\nsecret = %s\n" "$SYNC_NODE_COUCHDB_SECRET" >> $CLUSTER_CREDENTIALS
+        fi
+
+        SYNC_NODE_UUID=`curl http://$COUCHDB_USER:$COUCHDB_PASSWORD@$COUCHDB_SYNC_ADMINS_NODE:5984/_node/couchdb@$COUCHDB_SYNC_ADMINS_NODE/_config/couchdb/uuid | sed "s/^\([\"]\)\(.*\)\1\$/\2/g"`
+        if ! grep -Pzoqr "uuid = $SYNC_NODE_UUID" /opt/couchdb/etc/local.d/*.ini; then
+            printf "\n[couchdb]\nuuid = %s\n" "$SYNC_NODE_UUID" >> $CLUSTER_CREDENTIALS
         fi
     fi
 
